@@ -95,9 +95,9 @@ int main(void) {
                        : DATA_SIZE - PACKSIZE * i);
 
             if (sendto(s, packet,
-                       DATA_SIZE - PACKSIZE * i > PACKSIZE
-                           ? PACKSIZE
-                           : DATA_SIZE - PACKSIZE * i,
+                       12 + (DATA_SIZE - PACKSIZE * i > PACKSIZE
+                                 ? PACKSIZE
+                                 : DATA_SIZE - PACKSIZE * i),
                        0, (struct sockaddr *)&remote, sizeof(remote)) == -1) {
                 die("sendto()");
             }

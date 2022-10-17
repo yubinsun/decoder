@@ -110,7 +110,7 @@ int main() {
 
             /* Copy to display buf and stats*/
             memcpy(display_buf + size_total, buf + 12, recv_len - 12);
-            size_total = size_total + recv_len;
+            size_total = size_total + recv_len - 12;
             packet_count++;
 
             /* Print info */
@@ -124,7 +124,7 @@ int main() {
             std::cout << std::dec << "FC:" << (unsigned int)buf[0]
                       << "\tPC:" << (unsigned int)buf[1] << std::endl;
             /* A simple, unsafe check */
-            if (size_total >= BUF_SIZE-1000) {
+            if (size_total >= BUF_SIZE) {
                 break;
             }
         }
