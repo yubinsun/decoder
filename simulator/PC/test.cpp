@@ -15,12 +15,13 @@ using namespace std::this_thread;      // sleep_for, sleep_until
 using namespace std::chrono;           // nanoseconds, system_clock, seconds
 using namespace std::chrono_literals;  // ns, us, ms, s, h, etc.
 
-#define PORT      8887  // The port on which to listen for incoming data
-#define ROW       400
-#define COL       400
-#define DATA_SIZE (ROW * COL)
+#define TARGET_PORT 9999  // The port on which to listen for incoming data
+#define TARGET_IP   "192.168.1.80"
+#define ROW         400
+#define COL         400
+#define DATA_SIZE   (ROW * COL)
 #define PACKSIZE \
-    65495  // 65535 - 28 (Header 20 for IP, 8 for UDP ) - 12(Endo package
+    65495  // 65535 - 28 (Header 20 for IP, 8 for UDP ) - 12(Image packet
            // headers)
 
 #define PACKAGE_NUMBER \
@@ -47,23 +48,22 @@ int main(void) {
     // zero out the structure
     memset((char *)&local, 0, sizeof(local));
 
-    local.sin_family = AF_INET;
-    local.sin_port = htons(8888);
-    local.sin_addr.s_addr = htonl(INADDR_ANY);
-    // inet_aton("192.168.1.80", &local.sin_addr);
+    // local.sin_family = AF_INET;
+    // local.sin_port = htons(8888);
+    // local.sin_addr.s_addr = htonl(INADDR_ANY);
+    // // inet_aton("192.168.1.80", &local.sin_addr);
 
     remote.sin_family = AF_INET;
-    remote.sin_port = htons(9999);
+    remote.sin_port = htons(TARGET_PORT);
     // remote.sin_addr.s_addr = htonl(INADDR_ANY);
-    inet_aton("192.168.1.80", &remote.sin_addr);
+    inet_aton(TARGET_IP, &remote.sin_addr);
 
     // bind socket to port
     // if (bind(s, (struct sockaddr *)&local, sizeof(local)) == -1) {
     //     die("bind");
     // }
 
-    for (int i  = 0; i < 100; i++) {
-
+    for (int i = 0; i < 100; i++) {
         /* generate a image */
         memset(send_buf, 128, DATA_SIZE);
         for (int r = 0; r < ROW; r++) {
@@ -74,7 +74,7 @@ int main(void) {
                 }
             }
         }
-        frame_count ++;
+        frame_count++;
         //
 
         // // try to receive some data, this is a blocking call

@@ -11,8 +11,8 @@
 #include <thread>
 
 #include "Decode.h"
-#define ROWS     100
-#define COLS     100
+#define ROWS     400
+#define COLS     400
 #define BUF_SIZE (ROWS * COLS)
 #define LOCAL_IP "192.168.1.80"
 using namespace cv;
@@ -88,7 +88,7 @@ int main() {
 
             /* Copy to display buf and stats*/
             memcpy(display_buf + size_total, buf + 12, recv_len - 12);
-            size_total = size_total + recv_len - 12;
+            size_total = size_total + recv_len;
             packet_count++;
 
             /* Print info */
@@ -102,7 +102,7 @@ int main() {
             std::cout << std::dec << "FC:" << (unsigned int)buf[0]
                       << "\tPC:" << (unsigned int)buf[1] << std::endl;
             /* A simple, unsafe check */
-            if (size_total >= BUF_SIZE) {
+            if (size_total >= BUF_SIZE-1000) {
                 break;
             }
         }
