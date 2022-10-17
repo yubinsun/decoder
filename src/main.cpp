@@ -1,3 +1,13 @@
+/**
+ * @file test.cpp
+ * @author your name (you@domain.com)
+ * @brief Recever Image Packets (see definition), and display image
+ * @version 0.1
+ * @date 2022-10-16
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include <arpa/inet.h>
 #include <stdint.h>
 #include <stdio.h>   //printf
@@ -24,6 +34,13 @@ using namespace std::chrono_literals;  // ns, us, ms, s, h, etc.
 uint8_t buf[BUF_SIZE];
 uint8_t display_buf[BUF_SIZE];
 
+
+/**
+ * @brief Display an image. Size is defined in CV::mat
+ * 
+ * @param image 
+ * @return int 
+ */
 int display_img(cv::Mat &image) {
     // Check for failure
     if (image.empty()) {
@@ -41,6 +58,11 @@ int display_img(cv::Mat &image) {
     waitKey(1);
 }
 
+/**
+ * @brief Error handling
+ * 
+ * @param s 
+ */
 void exit_(char *s) {
     perror(s);
     exit(1);
@@ -116,21 +138,5 @@ int main() {
         cv::Mat A(ROWS, COLS, CV_8U, display_buf);
         display_img(A);
     }
-
-    // while (1) {
-    //     sleep_for(120s);
-    //     break;
-    //     /* code */
-    // }
-
-    // exit(0);
-    // while (1) {
-    //     sleep_for(30ms);
-    //     d.next_frame(buf);
-    //     cv::Mat A(400, 400, CV_8U, buf);
-    //     display_img(A);
-    //     std::cout << d.frame_number() << std::endl;
-    // }
-
     return 0;
 }

@@ -1,6 +1,13 @@
-/*
-        Simple udp server
-*/
+/**
+ * @file test.cpp
+ * @author your name (you@domain.com)
+ * @brief Simulation that sends out Image Packets (see definition)
+ * @version 0.1
+ * @date 2022-10-16
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include <arpa/inet.h>
 #include <stdio.h>   //printf
 #include <stdlib.h>  //exit(0);
@@ -29,6 +36,11 @@ using namespace std::chrono_literals;  // ns, us, ms, s, h, etc.
 
 char send_buf[DATA_SIZE];
 
+/**
+ * @brief Error handling
+ *
+ * @param s
+ */
 void die(char *s) {
     perror(s);
     exit(1);
@@ -48,21 +60,16 @@ int main(void) {
     // zero out the structure
     memset((char *)&local, 0, sizeof(local));
 
-    // local.sin_family = AF_INET;
-    // local.sin_port = htons(8888);
-    // local.sin_addr.s_addr = htonl(INADDR_ANY);
-    // // inet_aton("192.168.1.80", &local.sin_addr);
-
     remote.sin_family = AF_INET;
     remote.sin_port = htons(TARGET_PORT);
-    // remote.sin_addr.s_addr = htonl(INADDR_ANY);
     inet_aton(TARGET_IP, &remote.sin_addr);
 
-    // bind socket to port
-    // if (bind(s, (struct sockaddr *)&local, sizeof(local)) == -1) {
-    //     die("bind");
-    // }
-
+    /**
+     * @brief Loop 100 times: Create a image, break the image into N Image
+     * packet, and send each image packet out.
+     *
+     *
+     */
     for (int i = 0; i < 100; i++) {
         /* generate a image */
         memset(send_buf, 128, DATA_SIZE);
@@ -76,18 +83,6 @@ int main(void) {
         }
         frame_count++;
         //
-
-        // // try to receive some data, this is a blocking call
-        // if ((recv_len =
-        //          recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *)&remote,
-        //                   (socklen_t *)&slen)) == -1) {
-        //     die("recvfrom()");
-        // }
-
-        // // print details of the client/peer and the data received
-        // printf("Received packet from %s:%d\n", inet_ntoa(remote.sin_addr),
-        //        ntohs(remote.sin_port));
-        // printf("Data: %s\n", buf);
 
         for (int i = 0; i < PACKAGE_NUMBER; i++) {
             /* Construct packet*/
@@ -110,6 +105,10 @@ int main(void) {
         }
         sleep_for(1s);
 
+        /**
+         * @brief Add a break here can help debug using wireshark.
+         *
+         */
         // break;
     }
 
