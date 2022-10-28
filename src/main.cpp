@@ -10,7 +10,7 @@
 #include <opencv2/opencv.hpp>
 #include <thread>
 
-#include "Decode.h"
+#include "decode.h"
 #define ROWS     400
 #define COLS     400
 #define BUF_SIZE (ROWS * COLS)
