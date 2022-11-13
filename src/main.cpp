@@ -21,10 +21,10 @@
 #include <thread>
 
 #include "Decode.h"
-#define ROWS     400
-#define COLS     400
-#define BUF_SIZE (ROWS * COLS)
-#define LOCAL_IP "192.168.1.80"
+#define ROWS           240
+#define COLS           320
+#define BYTE_PER_PIXEL 2
+#define BUF_SIZE       (ROWS * COLS * BYTE_PER_PIXEL)
 using namespace cv;
 using namespace std;
 using namespace std::this_thread;      // sleep_for, sleep_until
@@ -149,7 +149,27 @@ int main() {
          ** d.decode_frame(display_buf);
          */
         /* Display the image */
-        cv::Mat A(ROWS, COLS, CV_8U, display_buf);
+        /**
+         * @brief Convert RGB565 to BGR888
+         *
+         */
+        char BGR888[ROWS * COLS * 3];
+        memset(BGR888, 0, ROWS * COLS * 3);
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                // red
+                BGR888[(r * COLS + c) * 3 + 2] =
+                    display_buf[(r * COLS + c) * 2] & 0xF8;
+                // green
+                BGR888[(r * COLS + c) * 3 + 1] =
+                    (display_buf[(r * COLS + c) * 2] & 0x07) << 5 |
+                    (display_buf[(r * COLS + c) * 2 + 1] & 0xE0) >> 3;
+                // blue
+                BGR888[(r * COLS + c) * 3 + 0] =
+                    (display_buf[(r * COLS + c) * 2 + 1] & 0x1F) << 3;  // blue
+            }
+        }
+        cv::Mat A(ROWS, COLS, CV_8UC3, BGR888);
         display_img(A);
     }
     return 0;
