@@ -92,11 +92,14 @@ int main() {
     if (bind(s, (struct sockaddr *)&local, sizeof(local)) == -1) {
         exit_("bind");
     }
+    uint32_t size_total = 0;
+    uint32_t packet_count = 0;
+    long frame_count = -1;
     while (1) {
         // recv
-        uint32_t size_total = 0;
-        uint32_t packet_count = 0;
-        uint8_t frame_count = -1;
+        size_total = 0;
+        packet_count = 0;
+        frame_count = -1;
         while (1) {
             // Recv max size is set to BUFSIZE, but not actually receiving that
             // much
@@ -105,9 +108,15 @@ int main() {
                               (socklen_t *)&slen)) == -1) {
                 exit_("recvfrom()");
             }
-            /* Need to check if the packet is valid. e.g. not skipping packets,
-            out-of-order packages. @todo */
-
+            /* Check for out of order package and ignore */
+            if ((frame_count == -1 && buf[1] != 0) | (frame_count != -1 && frame_count != buf[0])){
+                std::cout << "frame messed up, skip this frame 2" << std::endl;
+                frame_count = -1;
+                break;
+            }
+            else if (frame_count == -1) {
+                frame_count = buf[0];
+            } 
             /* Copy to display buf and stats*/
             memcpy(display_buf + size_total, buf + 12, recv_len - 12);
             size_total = size_total + recv_len - 12;
@@ -128,6 +137,11 @@ int main() {
                 break;
             }
         }
+        /* Check for out of order package and ignore */
+        if (frame_count == -1){
+            continue;
+        }
+        /* Print stats */
         std::cout << std::dec << "Frame size: " << size_total << std::endl;
         /* At this moment we dont need decoder, yet. Will be some this like
          *this:
