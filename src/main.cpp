@@ -25,6 +25,7 @@
 #define COLS           320
 #define BYTE_PER_PIXEL 2
 #define BUF_SIZE       (ROWS * COLS * BYTE_PER_PIXEL)
+#define LOCAL_IP "192.168.1.80"
 using namespace cv;
 using namespace std;
 using namespace std::this_thread;      // sleep_for, sleep_until

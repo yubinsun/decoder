@@ -9,7 +9,7 @@ How to run:
 First, change the program on IP to your computer's IP. And port if necessary. Change image size according to receiver's configuation.
 Compile and run:
 ```
-g++ main.cpp -o simulate
+g++ test.cpp -o simulate
 ./simulate
 ```
 
